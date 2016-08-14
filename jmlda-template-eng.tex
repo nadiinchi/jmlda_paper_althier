@@ -91,11 +91,16 @@ Briefly: PLSA, LDA, ARTM. These are plate models/
 
 hierarchical approaches
 
+hPAM, hLDA: slow. hPAM allows multiple inheritance and Zavitsanos as well, but they don't allow sparsing. And mainstream is tree hierarchy.
+
+STROD: fast. CATHY too...
+
 hvHDP: bottom up, child topic as documents
 
 STROD: parent topic distribution is a mixture of child topic distributions
 
-
+From Zavitsanod review: about evaluation.
+From STROD review: slow Gibbs sampling based methods.
 
 \section{Problem statement}
 In this paper we refer to the document collection as $D$ consisting of documents of different subjects.
@@ -104,14 +109,14 @@ Documents may contain not only words but other elements too, say tags, links, lo
 A document $d \in D$ is a sequence of $n_d$ elements: $(w_1, w_2, w_3, \dots)$, $w_i \in W$. In this paper an order of elements is not important. Thus collection can be represented as a counters matrix $\{n_{dw}\}_{D \times W}$, $n_{dw}$ is a number of $w$ occurencies in $d$.
 
 Given the text collection, our goal is to organize its documents into comprehensive hierarchical structure. We define \emph{topic hierarchy} as an oriented multipartitle (multilevel) graph of topics so that edges connect topics from neighboring levels. If there is an edge $a \rightarrow t$ in hierarchy then topic $a$ is called \emph{parent}, or \emph{ancestor} topic and $t$ is called \emph{child topic}, or \emph{subtopic}. Parent topic is divided into several more specific child topics. 
-Obviously, number of topics on each following (child) level must be greater than on previous (parent) level. Zero level consists of only one topic called \emph{root}. AN example of topic hierarchy is given on pic.~\ref{fg:hierarchy}.
+Obviously, number of topics on each following (child) level must be greater than on previous (parent) level. Zero level consists of only one topic called \emph{root}. An example of topic hierarchy is given on pic.~\ref{fg:hierarchy}.
 
 Each topic in hierarchy is associated with distributions over each modality dictionary. This allows us to represent a topic by a top of most probable words saying what this topic is about. The same can be done with other modalities.
 \begin{figure}[!th]
 	\begin{center}
-		\includegraphics[width=0.4\linewidth]{\hdir/hierarchy_definition.pdf}
+		\includegraphics[width=0.4\linewidth]{\hdir/fig/hierarchy_definition.pdf}
 	\end{center}
-	\caption{An example topic hierarchy}
+	\caption{An example of topic hierarchy}
 	\label{fg:hierarchy}
 \end{figure}
 
@@ -152,24 +157,47 @@ Weights $\kappa_m$ are used to balance log-likehood of modalities. Regularizers 
 \begin{Theorem}[Vorontsov, Potapenko, 2014]
 If all regularizers are continuously differentiable on $\Phi$ and $\Theta$, then the stationary point of problem \eqref{optimization_problem} with constrains \eqref{constrains} satisfies the following system yielding EM-algorithm for model training:
 
-\begin{equation*}
+\begin{equation}
+\label{EM_alrorithm}
 	\begin{split}
 	 \text{E-step}: \quad & p(t|d, w) = \norm\limits_{t \in T} [\phi_{wt} \theta_{td}], \quad w \in W, \, d \in D ;\\
-	 \text{M-step}: \quad & \phi_{wt} = \norm\limits_{w \in W^m} \biggl[n_{wt} + \frac{\partial R}{\partial \phi_{wt}} \phi_{wt}\biggr], \quad n_{wt} = \sum_{d \in D} n_{dw} p(t| d, w) ;\\
-	 & \theta_{td} = \norm\limits_{t \in T} \biggl[n_{td} + \frac{\partial R}{\partial \theta_{td}} \theta_{td}\biggr], \quad n_{td} = \sum_{w \in W} n_{dw} p(t| d, w).
+	 \text{M-step}: \quad & \phi_{wt} = \norm\limits_{w \in W^m} \biggl[n_{wt} + \frac{\partial R}{\partial \phi_{wt}} \phi_{wt}\biggr], \quad n_{wt} = \sum_{d \in D} n_{dw} p(t| d, w), \quad w \in W^m, t \in T, m \in M;\\
+	 & \theta_{td} = \norm\limits_{t \in T} \biggl[n_{td} + \frac{\partial R}{\partial \theta_{td}} \theta_{td}\biggr], \quad n_{td} = \sum_{w \in W} n_{dw} p(t| d, w), \quad t \in T, d \in D.
 	 \end{split}
-\end{equation*}
+\end{equation}
 \end{Theorem}
-EM-algorithm is obtained by applying the fixed point iteration method to the system.
+EM-algorithm is obtained by applying the fixed point iteration method to the system. An initial guess is random.
 
-Hyperparameters of plate topic model are number of topics $|T|$ and weights $\{\kappa_m\}_{m \in M}$, $\{\tau_i\}_{i}$. While learning topic hierarchy, we will need to train plate topic model for each level of hierarchy, every time with new hyperparameters settings.
+\textbf{Sparsing regularizers.} Frequently used sparsing regularizer~\cite{ARTM} causes distributions $p(w|t)$ and $p(t|d)$ to be sparse meaning the majority of distribution's domain elements have zero probability. To achieve it Kullback–Leibler divergence between specified distribution $\bm \alpha$, usually uniform, and target distribution is maximized. For instance, $\Theta$-sparsing regularizer:
+\[
+\sum_{d \in D} KL(\bm \alpha \| \bm \theta_d) \rightarrow \max_{\Theta} 
+\quad
+\Leftrightarrow
+\quad
+R_1(\Theta) = 
+ - \sum_{d \in D} \sum_{t \in T} \alpha_t \ln \theta_{td} \rightarrow \max_{\Theta},
+\]
+$\bm \theta_d$ denotes $\Theta$ column, for uniform distribution $\alpha_t = \frac 1 {|T|}$. Similarly for $\Phi^m$ sparsing with uniform specified distribution:
+\[
+R_2(\Phi^m) = -\sum_{t \in T} \sum_{w \in W^m} \frac 1 {|W^m|} \ln \phi^m_{wt} \rightarrow \max_{\Phi^m} \quad \forall m.
+\] 
+Modified M-step formulas for parameters update:
+\begin{equation}
+\label{sparsing_M_step}
+\phi_{wt} = \norm\limits_{w \in W^m} \biggl[n_{wt} - \frac {\tau_1} {|W^m|}\biggr],
+\quad
+\theta_{td} = \norm\limits_{t \in T} \biggl[n_{td} - \frac {\tau_2} {|T|}\biggr].
+\end{equation}
+
+\vspace{0.5cm}
+Hyperparameters of plate topic model are number of topics $|T|$, weights $\{\kappa_m\}_{m \in M}$ and regularization coefficients $\{\tau_i\}_{i}$. While learning topic hierarchy, we will need to train plate topic model for each level of hierarchy, every time with new hyperparameters settings.
 
 \subsection{hARTM: top-down hierarchy learning}
-Since topic hierarchy is a multilevel graph, we consider each level as a plate topic model. Zero level is associated with the whole collection. The first level contains small number of major topics. Starting from second level, we need not only to model topics, but also to establish parent-child topic relations. To do this, we introduce two additional matrix factorization problems and propose two new interchangeable regularizers based on them. 
+Since topic hierarchy is a multilevel graph, we consider each level as a plate topic model. We propose top-down, level by level hierarchy learning algorithm. Zero level is associated with the whole collection. The first level contains small number of major topics. Starting from second level, we need not only to model topics, but also to establish parent-child topic relations. To do this, we introduce two additional matrix factorization problems and propose two new interchangeable regularizers based on them. 
 
 Assume we have already learned $\ell \geqslant 1$ hierarchy levels. Now we will learn $(\ell+1)$-th level that is child level for $\ell$-th ancestor level. Not to confuse levels we denote parent level topics $a \in A$ and parameters $\Phi^\ell$, $\Theta^\ell$ instead of $t \in T$, $\Phi$ and $\Theta$ used for child level. Note that $\Phi^\ell$ and $\Theta^\ell$ are already modeled.
 
-\textbf{$\Phi$ regularizer.}
+\textbf{$\Phi$ interlevel regularizer.}
 We suppose that parent topic distribution over words and other modalities should be a mixture of child topics distributions:
 \[
 p(w|a) = \sum_{t \in T} p(w|t) p(t|a), \quad w \in W^m, \, a \in A.
@@ -188,17 +216,18 @@ This means an approximation
 \end{equation}
 or, equivalently,
 \[
-R(\Phi^m, \Psi) = \sum_{a \in A} \sum_{w \in W^m} n_{wa} \ln \sum_{t \in T} \phi_{wt} \psi_{ta} \rightarrow \max_{\Phi^m, \Psi},
+R_3(\Phi^m, \Psi) = \sum_{a \in A} \sum_{w \in W^m} n_{wa} \ln \sum_{t \in T} \phi_{wt} \psi_{ta} \rightarrow \max_{\Phi^m, \Psi},
 \]
 $\bm \phi^{\ell, m}_a$ and $\bm \psi_a$ denote columns of $\Phi^{\ell, m}$ and $\Psi$ respectively. Weights $n_a = \sum_{w \in W^m} n_{wa}$ are imposed to balance parent topics proportionally to their size and to scale criteria up to log-likelihood scale, $n_{wa}$ are parent topic counters from EM-algorithm.
 Regularizer criterias are weighted by modalities weights: 
 \[
-R(\Phi, \Psi) = \sum_{m \in M} \kappa_m R(\Phi^m, \Psi).
+R_3(\Phi, \Psi) = \sum_{m \in M} \kappa_m R_3(\Phi^m, \Psi).
 \]
 
-This regularizer is equivalent to adding $|A|$ pseudodocuments to collection represented by $\{n_{wa}\}_{W \times A}$ columns. Then $\Psi$ forms additional columns to $\Theta$ corresponding to pseudodocuments. Note than child level couldn't be trained only on pseudodocuments because internal dimension in approximation \eqref{phi_approximation} is higher than the minimum dimension of $\Phi^\ell$ and $\Phi$ will just copy columns of $\Phi^\ell$.
+This regularizer is equivalent to adding $|A|$ pseudodocuments to collection represented by $\{n_{wa}\}_{W \times A}$ columns. Then $\Psi$ forms additional columns to $\Theta$ corresponding to pseudodocuments.
+Note than child level couldn't be trained only on pseudodocuments because internal dimension in approximation \eqref{phi_approximation} is higher than the minimum dimension of $\Phi^\ell$ and $\Phi$ will just copy columns of $\Phi^\ell$.
 
-\textbf{$\Theta$ regularizer.}
+\textbf{$\Theta$ interlevel regularizer.}
 The same idea may be applied for regularizing $\Theta$ instead of $\Phi$. Then for each document distribution over parent topics is a mixture of topic distributions:   % ???
 \[
 p(a|d) = \sum_{t \in T} p(a|t) p(t|d).
@@ -210,31 +239,61 @@ Additional matrix approximation looks like
 \end{equation}
 with interlevel distributions $\widetilde \Psi = \{\tilde \psi_{at}\}_{A \times T}$, $\tilde \psi_{at} = p(a|t)$. This means that parent topic's documents set is a union of children's documents sets. Regularizer criteria:
 \[
-R(\Theta, \widetilde \Psi) = \sum_{a \in A} \sum_{d \in D} \theta^\ell_{ad} \ln \sum_{t \in T} \tilde \psi_{at} \theta_{td} \rightarrow \max_{\widetilde \Psi, \Theta}.
+R_4(\Theta, \widetilde \Psi) = \sum_{a \in A} \sum_{d \in D} \theta^\ell_{ad} \ln \sum_{t \in T} \tilde \psi_{at} \theta_{td} \rightarrow \max_{\widetilde \Psi, \Theta}.
 \]
 To train child model with regularizer we add new modality $\tilde m$ corresponding to parent topics and consider document counters for this modality are $\theta^\ell_{ad}$. $\Theta$-regularizer coefficient will become modality weight and $\widetilde \Psi$ will correspond to $\Phi^{\tilde m}$.
 \begin{figure}[!th]
 	\begin{center}
-	\includegraphics[width=0.55\linewidth]{\hdir/matrices_illustration.pdf}
+	\includegraphics[width=\linewidth]{\hdir/fig/matrices_illustration_wide.pdf}
 \end{center}
 \caption{An illustration of child level regularization}
 \label{fg:matrices}
 \end{figure}
 
 \vspace{0.5cm}
-An illustration of manipulating with pseudodocuments and new modality while the regularization of child level is given on pic.~\ref{fg:matrices}.  Note that when learning $(\ell+1)$-th level only $\ell$-th level's topics are used for regularization, not all previous levels' topics. 
+An illustration of manipulating with pseudodocuments and new modality while the regularization of child level is given on pic.~\ref{fg:matrices}.
 
+\textbf{Hierarchy sparsing regularizers.}
+When we allow topics to inherit from a number of parents we assume that this number won't be large, i.~e. 1--3, rarely greater parents. Such hierarchy is called \emph{sparse} one. In other words, we want distributions $p(a|t)$ to be sparse. Regularization allows us to achieve this requirement.
 
+Since in $\Theta$ interlevel regularization approach $\widetilde \Psi$ is a child $\Phi^{\tilde m}$ and its columns represent distributions $p(a|t)$ we can use $\Phi$-sparsing regularizer described above to make the hierarchy sparse.
+We rewrite \eqref{sparsing_M_step} replacing $\phi \rightarrow \tilde \psi$, $w \rightarrow a$, $W^m \rightarrow A$ to show how $\widetilde \Psi$ updates on each iteration:
+\[
+\tilde \psi_{at} = \norm\limits_{a \in A} \biggl[n_{at} - \frac {\tau_1} {|A|}\biggr].
+\]
 
+In case of $\Phi$ interlevel regularization $\Psi$ columns represent $p(t|a)$ distributions that can be converted to $p(a|t)$ using Bayes formula. Following the idea of other sparsing regularizers, we maximize KL-divergence between uniform distribution $\bm \gamma = \{\frac 1 {|A|}\}_{a \in A}$ and target one $\bm p_t = \{p(a|t)\}_{a \in A}$:
+\[
+\sum_{t \in T} KL(\bm \gamma \| \bm p_t) \rightarrow \max_{\Psi} 
+\]
+or, equivalently,
+\[
+R_5(\Psi) = \sum_{t \in T} \sum_{a \in A} \frac 1 {|A|} \ln p(a|t) = 
+ \frac 1 {|A|} \sum_a \sum_t \ln \frac{\psi_{ta} \, p(a)} {\sum_{a'} \psi_{ta'} \, p(a')} \rightarrow \min_{\Psi}.
+\]
 
-%High rank, only as regularizer. Idea similar to Zavitsanos.
-\subsection{Hierarchy sparsing}
+To show how $\Psi$ updates we rewrite M-step formula in \eqref{EM_alrorithm} replacing $\theta \rightarrow \psi$ and $d \rightarrow a$ and taking derivatives of $R_5(\Psi)$ with respect to $\psi_{ta}$:
+\[
+\psi_{ta} = \norm\limits_{t \in T} \Biggl[n_{ta} - \tau_5 \biggl( \frac {1} {|A|} - p(a|t) \biggr)\Biggr].
+\]
+For each topic $t$ parent topics $a$ with high $p(a|t)$ get higher and parents with low $p(a|t)$ get lower. Note that $R_5$ cannot zeroize all components of $\Psi$ column whereas $R_1$ can do this with $\widetilde \Psi$ column.
+
+\vspace{0.5cm}
+\textbf{Hierarchy learning scenario.}
+Thus, hyperparameters of topic hierarchy are number of levels, number of topics on each level, modalities weights and regularization coefficients.
+One can learn hierarchy level by level, on each level finding parents for topics from previous level using $\Phi$ ot $\Theta$ interlevel rgularizer. If sparse hierarchy is desired, hierarchy sparsing regularizer should be also used. The process of training levels is stopped when topics on the last level are highly specialized. 
+
+Regularization coefficients may be tuned for each level individually or used the same for all levels.
+Note that when learning $(\ell+1)$-th level only $\ell$-th level's topics are used for regularization, not all previous levels' topics.
+
+When hierarchy is learned, topics on each level are represented by its distributions over words and other modalities. Documents on each level are assigned to several topics with proportions specified in this level's $\Theta$ matrix. The hierarchy structure is defined by interlevel distributions. To draw the topic graph one may impose a threshold on $p(a|t)$ or $p(t|a)$.
 
 \section{Implementation in BigARTM, open-source topic modeling library}
 
 \section{Experiments}
 
 \section{Discussion}
+%High rank, only as regularizer. Idea similar to Zavitsanos.
 
 %%%% please specify doi of the cited item if possible, see~\bibitem{article}
 %%%% Crossref doi of the item can be retrieved at http://www.crossref.org/guestquery/

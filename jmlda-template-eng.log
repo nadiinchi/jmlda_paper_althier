@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.12.15)  14 AUG 2016 01:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.12.15)  14 AUG 2016 15:34
 entering extended mode
 **jmlda-template-eng.tex
 (jmlda-template-eng.tex
@@ -1471,53 +1471,68 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 
 ]
-<./hierarchy_definition.pdf, id=31, 395.31686pt x 174.17072pt>
-File: ./hierarchy_definition.pdf Graphic file (type pdf)
+<./fig/hierarchy_definition.pdf, id=30, 395.31686pt x 174.17072pt>
+File: ./fig/hierarchy_definition.pdf Graphic file (type pdf)
 
-<use ./hierarchy_definition.pdf>
-Package pdftex.def Info: ./hierarchy_definition.pdf used on input line 112.
+<use ./fig/hierarchy_definition.pdf>
+Package pdftex.def Info: ./fig/hierarchy_definition.pdf used on input line 117.
+
 (pdftex.def)             Requested size: 193.47577pt x 85.24074pt.
 
 
-LaTeX Warning: Citation `ARTM' on page 2 undefined on input line 129.
+LaTeX Warning: Citation `ARTM' on page 2 undefined on input line 134.
 
 
 Underfull \hbox (badness 10000) has occurred while \output is active
 
  []
 
-[2 <./hierarchy_definition.pdf>]
-Underfull \hbox (badness 10000) has occurred while \output is active
+[2 <./fig/hierarchy_definition.pdf>]
 
- []
+LaTeX Warning: Citation `ARTM' on page 3 undefined on input line 171.
 
-[3] <./matrices_illustration.pdf, id=57, 743.65831pt x 405.43468pt>
-File: ./matrices_illustration.pdf Graphic file (type pdf)
-
-<use ./matrices_illustration.pdf>
-Package pdftex.def Info: ./matrices_illustration.pdf used on input line 218.
-(pdftex.def)             Requested size: 266.03473pt x 145.03459pt.
 
 Underfull \hbox (badness 10000) has occurred while \output is active
 
  []
 
-[4 <./matrices_illustration.pdf>]
-LaTeX Font Info:    Try loading font information for T2A+cmss on input line 289
+[3] <./fig/matrices_illustration_wide.pdf, id=56, 1408.5422pt x 194.40633pt>
+File: ./fig/matrices_illustration_wide.pdf Graphic file (type pdf)
+
+<use ./fig/matrices_illustration_wide.pdf>
+Package pdftex.def Info: ./fig/matrices_illustration_wide.pdf used on input lin
+e 247.
+(pdftex.def)             Requested size: 483.69684pt x 66.75877pt.
+
+Underfull \hbox (badness 10000) has occurred while \output is active
+
+ []
+
+[4]
+Underfull \hbox (badness 10000) has occurred while \output is active
+
+ []
+
+[5 <./fig/matrices_illustration_wide.pdf>]
+Underfull \hbox (badness 10000) has occurred while \output is active
+
+ []
+
+[6]
+LaTeX Font Info:    Try loading font information for T2A+cmss on input line 348
 .
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\cyrillic\t2acmss.fd"
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\cyrillic\t2acmss.fd"
 File: t2acmss.fd 2001/08/11 v1.0a Computer Modern Cyrillic font definitions
 )
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 289.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 348.
 
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <8> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 289.
-LaTeX Font Info:    Try loading font information for T2A+cmtt on input line 289
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 348.
+LaTeX Font Info:    Try loading font information for T2A+cmtt on input line 348
 .
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\cyrillic\t2acmtt.fd"
@@ -1527,12 +1542,7 @@ Underfull \hbox (badness 10000) has occurred while \output is active
 
  []
 
-[5]
-Underfull \hbox (badness 10000) has occurred while \output is active
-
- []
-
-[6] (jmlda-template-eng.aux)
+[7] (jmlda-template-eng.aux)
 
 LaTeX Warning: There were undefined references.
 
@@ -1541,10 +1551,10 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 28927 strings out of 493673
- 651152 string characters out of 3143965
- 864715 words of memory out of 3000000
- 31538 multiletter control sequences out of 15000+200000
+ 28930 strings out of 493673
+ 651246 string characters out of 3143965
+ 865716 words of memory out of 3000000
+ 31540 multiletter control sequences out of 15000+200000
  44898 words of font info for 133 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  62i,19n,79p,3270b,609s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1589,9 +1599,9 @@ X/2.9/fonts/type1/public/cm-super/sfsx1728.pfb><C:/Users/1st/AppData/Roaming/Mi
 KTeX/2.9/fonts/type1/public/cm-super/sfti1095.pfb><C:/Users/1st/AppData/Roaming
 /MiKTeX/2.9/fonts/type1/public/cm-super/sftt1095.pfb><C:/Users/1st/AppData/Roam
 ing/MiKTeX/2.9/fonts/type1/public/cm-super/sftt1200.pfb>
-Output written on jmlda-template-eng.pdf (6 pages, 677176 bytes).
+Output written on jmlda-template-eng.pdf (7 pages, 682926 bytes).
 PDF statistics:
- 225 PDF objects out of 1000 (max. 8388607)
+ 230 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  47 words of extra memory for PDF output out of 10000 (max. 10000000)
 
