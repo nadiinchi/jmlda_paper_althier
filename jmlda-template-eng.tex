@@ -76,17 +76,28 @@
 
 \section{Introduction}
 \noindent %this command is placed at the beginning of the first sentence of each paragraph/section only.
-Multiple inheritance:
+Topic modeling is a popular technique for semantic analysis of text collections. Topic model defines each topic by a~probability distribution over words and describes each document by a~probability distribution over topics. 
+In large text collections such as digital libraries or social media archives topics are usually organized in a hierarchy. Topic hierarchy helps user to navigate through collection: going down the hierarchy, user chooses interesting subtopics and finds a small subset of documents to read. Also hierarchy can help to detect the number of topics in collection if they will be modeled from major to specific.
 
-It is common case in any field of knowledge when specific topic occurs on the edge of two or even more major topics. For example, bioinformatics combines applied mathematics and computer science to solve biology problems. 
+A lot of research about automatic topic hierarchy learning was done in last years. There are different definitions of topic hierarchy in literature depending on main properties authors determine for their approach. Despite all this work there is still no common quality measure of topic hierarchies. It makes difficult to compare and tune hierarchical models.  
 
-Feature: multiple inheritance \& ability to make graph sparse
+The basic drawback of all existing approaches to hierarchy learning is the difficulty of combining them with other modifications of topic models. These modifications include learning time- and location-specific topics, using additional information about texts in model, integrating topic models with other machine learning problems such as recommendations and classification. On the other hand, there is a novel approach that allows to blend different modifications in one topic model called Additive Regularization of Topic Models~\cite{ARTM}. 
+% Много ссылок на комбинации регуляризаторов в BigARTM.
+ARTM is well scalable for large collections~\cite{BigARTM} and is implemented in rich open-source topic modeling library BigARTM.
 
-Feature: fast
+The goal of this work is to propose a method of learning topic hierarchies via topic model regularization and integrate it with ARTM. 
 
-Feature: combination with other regularizers
+We focus on hierarchies as a multilevel graph of topics rather than a topic tree. While the last definition is a mainstream in literature, an assumption that a topic can inherit from several major topics looks more reasonable. 
+It is common case in any field of knowledge when specific topic occurs on the edge of two or even more major topics. For example, bioinformatics combines applied mathematics and computer science to solve biology problems. This situation is called multiple inheritance.
+Even if some approach supports multiple inheritance, neither of them propose a method of sparsing topic graph so that a topic may have more than one but only few parent topics. Regularization allows us to meet this requirement too.
+Finally, our approach automatically determines the number os subtopics for each topic.
+
+Hence, we propose a scalable method of learning topic hierarchies with multiple inheritance that can be easily adapted to any specific task using regularization. The reminder of paper is organized as follows. In section~1 we overview existing approaches for learning hierarchies. In section~2 we give formal problem statement, then describe out approach in section~3 and its implementation in BigARTM in section~4. The last two sections are about our experiments and discussion.
 
 \section{Related Work}
+\label{RelatedWork}
+
+
 Briefly: PLSA, LDA, ARTM. These are plate models/
 
 hierarchical approaches
@@ -103,6 +114,7 @@ From Zavitsanod review: about evaluation.
 From STROD review: slow Gibbs sampling based methods.
 
 \section{Problem statement}
+\label{ProblemStatement}
 In this paper we refer to the document collection as $D$ consisting of documents of different subjects.
 Documents may contain not only words but other elements too, say tags, links, location marks etc. We refer to such types of elements as modalities. For example, scientific paper can be described at least by three modalities: text, keywords and references. $M$ denotes a set of all modalities in the collection. Modalities $m \in M$ are defined by disjoint dictionaries $W = \bigsqcup_{m \in M} W^m$. 
 
@@ -130,6 +142,7 @@ $\norm\limits_{x \in X} [y_x] = \frac{( y_x )_+}
 %In such formulation each topic except root may have more than one parent topics. 
 
 \section{hARTM framework}
+\label{hARTM} 
 \subsection{ARTM: plate topic models}
 Plate topic model describes collection $D$ by finite topics set $T$. In ARTM~\cite{ARTM} document distribution over each modality is modeled as a mixture of topics distributions:
 \[
@@ -289,6 +302,7 @@ Note that when learning $(\ell+1)$-th level only $\ell$-th level's topics are us
 When hierarchy is learned, topics on each level are represented by its distributions over words and other modalities. Documents on each level are assigned to several topics with proportions specified in this level's $\Theta$ matrix. The hierarchy structure is defined by interlevel distributions. To draw the topic graph one may impose a threshold on $p(a|t)$ or $p(t|a)$.
 
 \section{Implementation in BigARTM, open-source topic modeling library}
+\label{BigARTM} 
 
 \section{Experiments}
 
