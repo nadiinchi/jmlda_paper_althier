@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.12.15)  15 AUG 2016 22:41
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.12.15)  17 AUG 2016 00:51
 entering extended mode
 **jmlda-template-eng.tex
 (jmlda-template-eng.tex
@@ -1478,71 +1478,113 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 
 ]
-<./fig/hierarchy_definition.pdf, id=27, 395.31686pt x 174.17072pt>
-File: ./fig/hierarchy_definition.pdf Graphic file (type pdf)
 
-<use ./fig/hierarchy_definition.pdf>
-Package pdftex.def Info: ./fig/hierarchy_definition.pdf used on input line 129.
-
-(pdftex.def)             Requested size: 193.47577pt x 85.24074pt.
+LaTeX Warning: Citation `FindingBurstyTopics' on page 2 undefined on input line
+ 99.
 
 
-LaTeX Warning: Citation `ARTM' on page 2 undefined on input line 147.
+LaTeX Warning: Citation `CTR' on page 2 undefined on input line 99.
+
+
+LaTeX Warning: Citation `ARTM' on page 2 undefined on input line 101.
+
+
+LaTeX Warning: Citation `hLDA' on page 2 undefined on input line 105.
+
+
+LaTeX Warning: Citation `hPAM' on page 2 undefined on input line 105.
+
+
+LaTeX Warning: Citation `STROD' on page 2 undefined on input line 105.
+
+
+LaTeX Warning: Citation `splitLDA' on page 2 undefined on input line 108.
+
+
+LaTeX Warning: Citation `CATHY' on page 2 undefined on input line 109.
+
+
+LaTeX Warning: Citation `STROD' on page 2 undefined on input line 109.
+
+
+LaTeX Warning: Citation `STROD' on page 2 undefined on input line 109.
+
+
+LaTeX Warning: Citation `Srivastava' on page 2 undefined on input line 111.
+
+
+LaTeX Warning: Citation `Zavitsanos' on page 2 undefined on input line 113.
 
 
 Underfull \hbox (badness 10000) has occurred while \output is active
 
  []
 
-[2]
+[2] <./fig/hierarchy_definition.pdf, id=30, 395.31686pt x 174.17072pt>
+File: ./fig/hierarchy_definition.pdf Graphic file (type pdf)
+
+<use ./fig/hierarchy_definition.pdf>
+Package pdftex.def Info: ./fig/hierarchy_definition.pdf used on input line 131.
+
+(pdftex.def)             Requested size: 193.47577pt x 85.24074pt.
+
+
+LaTeX Warning: Citation `ARTM' on page 3 undefined on input line 149.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 Underfull \hbox (badness 10000) has occurred while \output is active
 
  []
 
 [3 <./fig/hierarchy_definition.pdf>]
 
-LaTeX Warning: Citation `ARTM' on page 4 undefined on input line 184.
+LaTeX Warning: Citation `ARTM' on page 4 undefined on input line 186.
 
 
 Underfull \hbox (badness 10000) has occurred while \output is active
 
  []
 
-[4] <./fig/matrices_illustration_wide.pdf, id=60, 1408.5422pt x 194.40633pt>
+[4]
+Underfull \hbox (badness 10000) has occurred while \output is active
+
+ []
+
+[5] <./fig/matrices_illustration_wide.pdf, id=63, 1408.5422pt x 194.40633pt>
 File: ./fig/matrices_illustration_wide.pdf Graphic file (type pdf)
 
 <use ./fig/matrices_illustration_wide.pdf>
 Package pdftex.def Info: ./fig/matrices_illustration_wide.pdf used on input lin
-e 260.
+e 262.
 (pdftex.def)             Requested size: 483.69684pt x 66.75877pt.
 
 Underfull \hbox (badness 10000) has occurred while \output is active
 
  []
 
-[5 <./fig/matrices_illustration_wide.pdf>]
-Underfull \vbox (badness 1009) has occurred while \output is active []
-
-
+[6 <./fig/matrices_illustration_wide.pdf>]
 Underfull \hbox (badness 10000) has occurred while \output is active
 
  []
 
-[6]
-LaTeX Font Info:    Try loading font information for T2A+cmss on input line 362
+[7]
+LaTeX Font Info:    Try loading font information for T2A+cmss on input line 364
 .
  ("C:\Program Files\MiKTeX 2.9\tex\latex\cyrillic\t2acmss.fd"
 File: t2acmss.fd 2001/08/11 v1.0a Computer Modern Cyrillic font definitions
 )
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 362.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 364.
 
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <8> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 362.
-LaTeX Font Info:    Try loading font information for T2A+cmtt on input line 362
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 364.
+LaTeX Font Info:    Try loading font information for T2A+cmtt on input line 364
 .
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\cyrillic\t2acmtt.fd"
@@ -1552,12 +1594,12 @@ Underfull \hbox (badness 10000) has occurred while \output is active
 
  []
 
-[7]
+[8]
 Underfull \hbox (badness 10000) has occurred while \output is active
 
  []
 
-[8] (jmlda-template-eng.aux)
+[9] (jmlda-template-eng.aux)
 
 LaTeX Warning: There were undefined references.
 
@@ -1566,10 +1608,10 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 28935 strings out of 493673
- 651302 string characters out of 3143965
- 865716 words of memory out of 3000000
- 31545 multiletter control sequences out of 15000+200000
+ 28944 strings out of 493673
+ 651388 string characters out of 3143965
+ 865715 words of memory out of 3000000
+ 31554 multiletter control sequences out of 15000+200000
  44898 words of font info for 133 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  62i,19n,79p,3270b,609s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1614,9 +1656,9 @@ X/2.9/fonts/type1/public/cm-super/sfsx1728.pfb><C:/Users/1st/AppData/Roaming/Mi
 KTeX/2.9/fonts/type1/public/cm-super/sfti1095.pfb><C:/Users/1st/AppData/Roaming
 /MiKTeX/2.9/fonts/type1/public/cm-super/sftt1095.pfb><C:/Users/1st/AppData/Roam
 ing/MiKTeX/2.9/fonts/type1/public/cm-super/sftt1200.pfb>
-Output written on jmlda-template-eng.pdf (8 pages, 691276 bytes).
+Output written on jmlda-template-eng.pdf (9 pages, 695687 bytes).
 PDF statistics:
- 233 PDF objects out of 1000 (max. 8388607)
+ 236 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  47 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -81,37 +81,39 @@ In large text collections such as digital libraries or social media archives top
 
 A lot of research about automatic topic hierarchy learning was done in last years. There are different definitions of topic hierarchy in literature depending on main properties authors determine for their approach. Despite all this work there is still no common quality measure of topic hierarchies. It makes difficult to compare and tune hierarchical models.  
 
-The basic drawback of all existing approaches to hierarchy learning is the difficulty of combining them with other modifications of topic models. These modifications include learning time- and location-specific topics, using additional information about texts in model, integrating topic models with other machine learning problems such as recommendations and classification. On the other hand, there is a novel approach that allows to blend different modifications in one topic model called Additive Regularization of Topic Models~\cite{ARTM}. 
+The basic drawback of all existing approaches to hierarchy learning is the difficulty of combining them with other modifications of topic models. These modifications include learning time- and location-specific topics, using additional information about texts in model, integrating topic models with other machine learning problems such as recommendations and classification. On the other hand, there is a novel approach that allows to blend different modifications in one topic model called Additive Regularization of Topic Models~\cite{ARTM}. This framework provides tools for handling multisource, or multimodal data, 
 % Много ссылок на комбинации регуляризаторов в BigARTM.
-ARTM is well scalable for large collections~\cite{BigARTM} and is implemented in rich open-source topic modeling library BigARTM.
+it is well scalable for large collections~\cite{BigARTM} and is implemented in rich open-source topic modeling library BigARTM.
 
 The goal of this work is to propose a method of learning topic hierarchies via topic model regularization and integrate it with ARTM. 
 
 We focus on hierarchies as a multilevel graph of topics rather than a topic tree. While the last definition is a mainstream in literature, an assumption that a topic can inherit from several major topics looks more reasonable. 
 It is common case in any field of knowledge when specific topic occurs on the edge of two or even more major topics. For example, bioinformatics combines applied mathematics and computer science to solve biology problems. This situation is called multiple inheritance.
-Even if some approach supports multiple inheritance, neither of them propose a method of sparsing topic graph so that a topic may have more than one but only few parent topics. Regularization allows us to meet this requirement too.
+Even if some approach supports multiple inheritance, almost none of them propose a method of sparsing topic graph so that a topic may have more than one but only few parent topics. Regularization allows us to meet this requirement too.
 Finally, our approach automatically determines the number os subtopics for each topic.
 
-Hence, we propose a scalable method of learning topic hierarchies with multiple inheritance that can be easily adapted to any specific task using regularization. The reminder of paper is organized as follows. In section~1 we overview existing approaches for learning hierarchies. In section~2 we give formal problem statement, then describe out approach in section~3 and its implementation in BigARTM in section~4. The last two sections are about our experiments and discussion.
+Hence, we propose a scalable method of learning multimodal topic hierarchies with multiple inheritance that can be easily adapted to any specific task using regularization. The reminder of paper is organized as follows. In section~1 we overview existing approaches for learning hierarchies. In section~2 we give formal problem statement, then describe out approach in section~3 and its implementation in BigARTM in section~4. The last two sections are about experiments and discussion.
 
 \section{Related Work}
 \label{RelatedWork}
+Two basic statistical topic modeling techniques are probabilistic latent semantic analysis (PLSA) and its Bayesian extension latent Dirichlet allocation (LDA). These are generative probabilistic models of word occurrence in a document. A lot of LDA expansions were developed to meet applications tasks: in~\cite{FindingBurstyTopics} generative model was improved to find topics that have bursty patterns on microblogs, in~\cite{CTR} topic model was merged with collaborative filtering probabilistic model to provide recommendations of previously unseen items. 
 
+Additive Regularization of Topic Models~\cite{ARTM} is PLSA extension that allows to impose additional, subject-specific criteria for topic model parameters. Many of LDA expansions can be interpreted as regularization criteria, then different modifications will be combined in single model.
+%%% ARTM citation?
 
-Briefly: PLSA, LDA, ARTM. These are plate models/
+These are flat models where all topics are treat as equal. In hierarchy topics are linked by parent-child relations.
+Topic hierarchies are usually built in two ways: via generative model complication or as a combination of several ties flat models. Hierarchical Latent Dirichlet allocation~(hLDA)~\cite{hLDA} and hierarchical Pachinko Allocation Model~(PAM)~\cite{hPAM} are examples of first group. As other LDA extensions these models are trained using time consuming Gibbs Sampling that limits available collection size~\cite{STROD} and integration with other topic models modifications. hLDA is a tree structure and hPAM is a directed acyclic multilevel graph with no tools for edges number reduction.
+% hLDA is a tree structure where each document passes a single path; hPAM is a directed acyclic multilevel graph where a document is assigned distributions over suptopics of each topic.
 
-hierarchical approaches
+Second group approaches are split into top-down, constructing hierarchy from major topics to specialized, and bottom-up. Tree structured hierarchies are often learned top-down recursively: first a flat model with few topics is learned, then process repeats for each sub-topic. SplitLDA~\cite{splitLDA} splits documents between topics accordingly to distribution over topics for each document-word pair. Constructing A Topical
+HierarchY~(CATHY) approach~\cite{CATHY} operates with phrases rather than words and divides them between subtopics. In Scalable and Robust Construction of Topic Hierarchies~(STROD)~\cite{STROD} each topic distribution over words can be expanded to a mixture of suptopics distributions using tensor decomposition algorithm. The drawback of recursive approaches is that they need heuristics to determine the number of subtopics in each topic. On the other hand, recursive learning is usually fast, STROD is proven~\cite{STROD} to be the fastest of all described approaches on large collections.
 
-hPAM, hLDA: slow. hPAM allows multiple inheritance and Zavitsanos as well, but they don't allow sparsing. And mainstream is tree hierarchy.
+Multiple inheritance supporting hierarchies are usually learned level by level. In~\cite{Srivastava} hierarchy is learned in two steps: first, flat LDA models are learned for each level; next, topics between levels are linked using special subsumption criteria. An advantage is that changing threshold on subsumption criteria one can tune hierarchy sparsity. The disadvantage is that specific topics are modeled independently from their major topics. Also a simple agglomerative clustering based method for determining the number of topics in levels is proposed in this work. 
 
-STROD: fast. CATHY too...
+In~\cite{Zavitsanos} hierarchy is constructed bottom up. A great number of last level topics is learned first, then these topics are treat as pseudodocuments and next level model is learned from them. In this case subtopic-pseudodocument proportions specify topic graph structure and there is no ability to reduct edges count. Author emphasizes that the evaluation of topic hierarchies is an open issue.
 
-hvHDP: bottom up, child topic as documents
-
-STROD: parent topic distribution is a mixture of child topic distributions
-
-From Zavitsanod review: about evaluation.
-From STROD review: slow Gibbs sampling based methods.
+Almost all hierarchical topic models are based on LDA, it makes difficult integrating other topic model modifications into hierarchy. We propose 
+a top down hierarchy learning framework based on ARTM that incorporates few reasonable ideas from other approaches.
 
 \section{Problem statement}
 \label{ProblemStatement}
@@ -132,7 +134,7 @@ Each topic in hierarchy is associated with distributions over each modality dict
 	\label{fg:hierarchy}
 \end{figure}
 
-To learn hierarchy we combine several plate topic models and tie them via regularization.
+To learn hierarchy we learn several flat topic models and tie them via regularization.
 
 In the rest of the paper we will use operator 
 $\norm\limits_{x \in X} [y_x] = \frac{( y_x )_+}
@@ -143,7 +145,7 @@ $\norm\limits_{x \in X} [y_x] = \frac{( y_x )_+}
 
 \section{hARTM framework}
 \label{hARTM} 
-\subsection{ARTM: plate topic models}
+\subsection{ARTM: flat topic models}
 Plate topic model describes collection $D$ by finite topics set $T$. In ARTM~\cite{ARTM} document distribution over each modality is modeled as a mixture of topics distributions:
 \[
 p(w|d) \approx \sum_{t \in T} p(w|t) p(t|d)   \quad  d \in D, \, w \in W^m.
@@ -203,10 +205,10 @@ Modified M-step formulas for parameters update:
 \end{equation}
 
 \vspace{0.5cm}
-Hyperparameters of plate topic model are number of topics $|T|$, weights $\{\kappa_m\}_{m \in M}$ and regularization coefficients $\{\tau_i\}_{i}$. While learning topic hierarchy, we will need to train plate topic model for each level of hierarchy, every time with new hyperparameters settings.
+Hyperparameters of flat topic model are number of topics $|T|$, weights $\{\kappa_m\}_{m \in M}$ and regularization coefficients $\{\tau_i\}_{i}$. While learning topic hierarchy, we will need to train flat topic model for each level of hierarchy, every time with new hyperparameters settings.
 
 \subsection{hARTM: top-down hierarchy learning}
-Since topic hierarchy is a multilevel graph, we consider each level as a plate topic model. We propose top-down, level by level hierarchy learning algorithm. Zero level is associated with the whole collection. The first level contains small number of major topics. Starting from second level, we need not only to model topics, but also to establish parent-child topic relations. To do this, we introduce two additional matrix factorization problems and propose two new interchangeable regularizers based on them. 
+Since topic hierarchy is a multilevel graph, we consider each level as a flat topic model. We propose top-down, level by level hierarchy learning algorithm. Zero level is associated with the whole collection. The first level contains small number of major topics. Starting from second level, we need not only to model topics, but also to establish parent-child topic relations. To do this, we introduce two additional matrix factorization problems and propose two new interchangeable regularizers based on them. 
 
 Assume we have already learned $\ell \geqslant 1$ hierarchy levels. Now we will learn $(\ell+1)$-th level that is child level for $\ell$-th ancestor level. Not to confuse levels we denote parent level topics $a \in A$ and parameters $\Phi^\ell$, $\Theta^\ell$ instead of $t \in T$, $\Phi$ and $\Theta$ used for child level. Note that $\Phi^\ell$ and $\Theta^\ell$ are already modeled.
 
