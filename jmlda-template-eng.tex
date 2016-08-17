@@ -303,8 +303,18 @@ Note that when learning $(\ell+1)$-th level only $\ell$-th level's topics are us
 
 When hierarchy is learned, topics on each level are represented by its distributions over words and other modalities. Documents on each level are assigned to several topics with proportions specified in this level's $\Theta$ matrix. The hierarchy structure is defined by interlevel distributions. To draw the topic graph one may impose a threshold on $p(a|t)$ or $p(t|a)$.
 
-\section{Implementation in BigARTM, open-source topic modeling library}
-\label{BigARTM} 
+\section{Implementation in BigARTM}
+BigARTM\footnote{\url{bigartm.org}} is an open-source topic modeling library with C++ kernel providing command line, C++ and python interfaces and rich built-in library with regularizers and scores. \mbox{BigARTM} takes multimodal input data in a range of formats and transforms it into a series of \emph{batches}, internal format. All batches store about the same number os documents, each batch is assigned float weight (default $1.0$).
+
+BigARTM provides offline and online multithread learning algorithms. Offline algorithms performs a number of scans over entire collection. During one scan, each thread processes one batch at a time, calculating $n_{td}$ and $\theta_{td}$ (applying $\Theta$-regularizers) and contributing local, batch-specific $n_{wt}$ multiplied by batch weight to global $n_{wt}$ counters. After the scan algorithm applies $\Phi$-regularizers to global $n_{wt}$ and normalizes them to calculate $\Phi$. Online algorithm improves the convergence rate by re-calculating $\Phi$ after every portion of
+batches.
+
+Hierarchy learning is implemented as a wrapper over library interface without changing kernel. To use $\Phi$ interlevel regularizer an additional batch is created from parent $\Phi$ matrix, the weight of this batch equals to regularization coefficient. This parent batch is appended to collection batches during the learning of child level, it doesn't affect algorithm efficiency. 
+
+To use $\Theta$ interlevel regularizer during child level learning each batch should be appended the new modality corresponding to current batch parent $\Theta$. This is time consuming operation. In experiments we show that two proposed interlevel regularizers are interchangeable so there is no need to use ineffective algorithm.
+
+$\Psi$ sparsing regularizer is implemented as usual $\Theta$ regularizer since $\Psi$ is parent batch $\Theta$.  
+
 
 \section{Experiments}
 
